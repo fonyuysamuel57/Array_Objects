@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Manipulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        h1{
+            text-align: center;
+        }
+        .container {
+            margin: 20px 0;
+        }
+        .object-style{
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 10px;
+            row-gap: 50px;
+            border: solid;
+            border: black;
+            background-color: rgb(229, 216, 216);
+        }
+        .array_values{
+            text-align: center;
+            font-weight: 200;
+        }
+        input, select, textarea {
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Array Size is: <span id="array-size"></span></h1>
+    <div id="object-list" class="object-style"></div>
+
+    <h2>Find any Object</h2>
+    <input type="number" id="find-id" placeholder="Enter an ID">
+    <button onclick="findObject()">Find</button>
+    <div id="find-result"></div>
+
+    <h2>Sliced Array Objects</h2>
+    <input type="number" id="start-index" placeholder="Start Index">
+    <input type="number" id="end-index" placeholder="End Index">
+    <button onclick="sliceArray()">Slice Array</button>
+    <div id="slice-result"></div>
+
+    <h2>Filter by Gender</h2>
+    <select id="gender-filter">
+        <option value="FEMALE">FEMALE</option>
+        <option value="MALE">MALE</option>
+    </select>
+    <button onclick="filterByGender()">Filter</button>
+    <div id="filter-result"></div>
+
+    <h2>Add New Object</h2>
+    <div class="form-group">
+        <label for="new-id">ID:</label>
+        <input type="number" id="new-id">
+    </div>
+    <div class="form-group">
+        <label for="new-firstName">First Name:</label>
+        <input type="text" id="new-firstName">
+    </div>
+    <div class="form-group">
+        <label for="new-lastName">Last Name:</label>
+        <input type="text" id="new-lastName">
+    </div>
+    <div class="form-group">
+        <label for="new-age">Age:</label>
+        <input type="number" id="new-age">
+    </div>
+    <div class="form-group">
+        <label for="new-gender">Gender:</label>
+        <select id="new-gender">
+            <option value="FEMALE">FEMALE</option>
+            <option value="MALE">MALE</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="new-description">Description:</label>
+        <textarea id="new-description"></textarea>
+    </div>
+    <button onclick="addObject()">Add Object</button>
+    <div id="add-result"></div>
+
+    <h2>Remove Object by ID</h2>
+    <input type="number" id="remove-id" placeholder="Enter an ID">
+    <button onclick="removeObject()">Remove</button>
+    <div id="remove-result"></div>
+
+    <h2>Display Object by Index</h2>
+    <input type="number" id="index" placeholder="Enter an Index">
+    <button onclick="displayObjectByIndex()">Display</button>
+    <div id="index-result"></div>
+
+    <script>
+        // A) Define an object type
+        class Person {
+            constructor(id, firstName, lastName, description, age, gender) {
+                this.id = id;
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.description = description;
+                this.age = age;
+                this.gender = gender;
+            }
+        }
+
+        // B) Create an array and instantiate six different objects
+        let people = [
+            new Person(1, "John", "Doe", "Description 1", 25, "MALE"),
+            new Person(2, "Jane", "Doe", "Description 2", 30, "FEMALE"),
+            new Person(3, "Jim", "Beam", "Description 3", 35, "MALE"),
+            new Person(4, "Jill", "Valentine", "Description 4", 28, "FEMALE"),
+            new Person(5, "Jack", "Sparrow", "Description 5", 40, "MALE"),
+            new Person(6, "Jenny", "Smith", "Description 6", 22, "FEMALE")
+        ];
+
+        // C) Display array size
+        document.getElementById('array-size').innerText = people.length;
+
+        // D) Loop through the array and display each object
+        function displayObjects(array) {
+            const objectList = document.getElementById('object-list');
+            objectList.innerHTML = '';
+            array.forEach(person => {
+                const div = document.createElement('div');
+                div.className = 'object-display';
+                div.innerHTML = `
+                    <p>ID: ${person.id}</p>
+                    <p>Name: ${person.firstName} ${person.lastName}</p>
+                    <p>Gender: ${person.gender}</p>
+                    <p>Age: ${person.age}</p>
+                    <p>Description: ${person.description}</p>
+                `;
+                objectList.appendChild(div);
+            });
+        }
+        displayObjects(people);
+
+        // E) Find object by ID
+        function findObject() {
+            const id = parseInt(document.getElementById('find-id').value);
+            const result = people.find(person => person.id === id);
+            const findResult = document.getElementById('find-result');
+            if (result) {
+                findResult.innerHTML = `
+                    <p>ID: ${result.id}</p>
+                    <p>Name: ${result.firstName} ${result.lastName}</p>
+                    <p>Gender: ${result.gender}</p>
+                    <p>Age: ${result.age}</p>
+                    <p>Description: ${result.description}</p>
+                `;
+            } else {
+                findResult.innerText = 'Object not found';
+            }
+        }
+
+        // F) Slice array
+        function sliceArray() {
+            const startIndex = parseInt(document.getElementById('start-index').value);
+            const endIndex = parseInt(document.getElementById('end-index').value);
+            const slicedArray = people.slice(startIndex, endIndex);
+            displayObjects(slicedArray);
+        }
+
+        // G) Filter by gender
+        function filterByGender() {
+            const gender = document.getElementById('gender-filter').value;
+            const filteredArray = people.filter(person => person.gender === gender);
+            displayObjects(filteredArray);
+        }
+
+        // H) Add new object
+        function addObject() {
+            const id = parseInt(document.getElementById('new-id').value);
+            const firstName = document.getElementById('new-firstName').value;
+            const lastName = document.getElementById('new-lastName').value;
+            const age = parseInt(document.getElementById('new-age').value);
+            const gender = document.getElementById('new-gender').value;
+            const description = document.getElementById('new-description').value;
+
+            const addResult = document.getElementById('add-result');
+
+            if (!id || !firstName || !lastName || !age || !gender || !description) {
+                addResult.innerText = 'All fields must be filled.';
+                return;
+            }
+
+            if (people.some(person => person.id === id)) {
+                addResult.innerText = 'Object already exists.';
+                return;
+            }
+
+            const newPerson = new Person(id, firstName, lastName, description, age, gender);
+            people.push(newPerson);
+            displayObjects(people);
+            document.getElementById('array-size').innerText = people.length;
+            addResult.innerText = 'Object added successfully.';
+        }
+
+        // I) Remove object by ID
+        function removeObject() {
+            const id = parseInt(document.getElementById('remove-id').value);
+            const index = people.findIndex(person => person.id === id);
+            const removeResult = document.getElementById('remove-result');
+            if (index !== -1) {
+                people.splice(index, 1);
+                displayObjects(people);
+                document.getElementById('array-size').innerText = people.length;
+                removeResult.innerText = 'Object removed successfully.';
+            } else {
+                removeResult.innerText = 'Object not found.';
+            }
+        }
+
+        // J) Display object by index
+        function displayObjectByIndex() {
+            const index = parseInt(document.getElementById('index').value);
+            const indexResult = document.getElementById('index-result');
+            if (index >= 0 && index < people.length) {
+                const person = people[index];
+                indexResult.innerHTML = `
+                    <p>ID: ${person.id}</p>
+                    <p>Name: ${person.firstName} ${person.lastName}</p>
+                    <p>Gender: ${person.gender}</p>
+                    <p>Age: ${person.age}</p>
+                    <p>Description: ${person.description}</p>
+                `;
+            } else {
+                indexResult.innerText = 'Index out of range.';
+            }
+        }
+    </script>
+</body>
+</html>
